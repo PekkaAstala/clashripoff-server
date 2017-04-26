@@ -36,9 +36,8 @@ wss.on('connection', (ws) => {
 
   ws.on('message', (message) => {
     wss.clients.forEach((client) => {
-      client.send(JSON.stringify({
-        type: message
-      }));
+      console.log("message: " + message )
+      client.send(message);
     });
   })
 });
