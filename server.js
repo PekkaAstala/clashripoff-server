@@ -8,18 +8,25 @@ const PORT = process.env.PORT || 3000;
 const INDEX = path.join(__dirname, 'index.html');
 
 const server = express()
-  .use((req, res) => res.sendFile(INDEX) )
+  .get('/start', (req, res) => {
+    wss.clients.forEach((client) => {
+      client.send("start");
+      res.send("Started...")
+    });
+  })
   .listen(PORT, () => console.log(`Listening on ${ PORT }`));
 
 const wss = new SocketServer({ server });
 
 wss.on('connection', (ws) => {
-  console.log('Client connected!');
-  ws.on('close', () => console.log('Client disconnected'));
-});
+  console.log('Client connected');
 
-setInterval(() => {
-  wss.clients.forEach((client) => {
-    client.send(new Date().toTimeString());
-  });
-}, 1000);
+  ws.on('close', () => console.log('Client disconnected'));
+
+  ws.on('message', (message) => {
+    wss.clients.forEach((client) => {
+      console.log("Message: " + message)
+      client.send(message);
+    });
+  })
+});
