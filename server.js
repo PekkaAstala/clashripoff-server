@@ -10,8 +10,19 @@ const INDEX = path.join(__dirname, 'index.html');
 const server = express()
   .get('/start', (req, res) => {
     wss.clients.forEach((client) => {
-      client.send("start");
+      client.send(JSON.stringify({
+        type: "start"
+      }));
       res.send("Started...")
+    });
+  })
+  .get('/spawn/:team', (req, res) => {
+    wss.clients.forEach((client) => {
+      client.send(JSON.stringify({
+        type: "spawn",
+        team: req.query.team
+      }));
+      res.send("Spawned " + req.query.teams)
     });
   })
   .listen(PORT, () => console.log(`Listening on ${ PORT }`));
@@ -25,8 +36,9 @@ wss.on('connection', (ws) => {
 
   ws.on('message', (message) => {
     wss.clients.forEach((client) => {
-      console.log("Message: " + message)
-      client.send(message);
+      client.send(JSON.stringify({
+        type: message
+      }));
     });
   })
 });
