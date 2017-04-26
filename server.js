@@ -20,9 +20,9 @@ const server = express()
     wss.clients.forEach((client) => {
       client.send(JSON.stringify({
         type: "spawn",
-        team: req.query.team
+        team: req.params.team
       }));
-      res.send("Spawned " + req.query.teams)
+      res.send("Spawned " + req.params.teams)
     });
   })
   .listen(PORT, () => console.log(`Listening on ${ PORT }`));
