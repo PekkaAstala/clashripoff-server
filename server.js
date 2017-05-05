@@ -25,6 +25,9 @@ const server = express()
       res.send("Spawned " + req.params.teams)
     });
   })
+  .get('/', (req, res) => {
+    res.send("OK")
+  })
   .listen(PORT, () => console.log(`Listening on ${ PORT }`));
 
 const wss = new SocketServer({ server });
